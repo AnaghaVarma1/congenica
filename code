@@ -1,0 +1,43 @@
+import numpy as np
+import pandas as pd
+data1 = pd.read_table("C:\\Users\\anagh\\OneDrive\\Documents\\Congenica\\Coding\\data_features.tsv")
+data1
+#importing data features file#
+data2 = pd.read_table("C:\\Users\\anagh\\OneDrive\\Documents\\Congenica\\Coding\\data_target.tsv")
+data2
+#importing data target file#
+#visualising the data
+from matplotlib import pyplot as plt
+x = data1['allele_frequency']
+y = data2['pathogenicity']
+
+plt.scatter(x,y,marker='x')
+plt.xlabel("allele frequency")
+plt.ylabel("pathogenicity") 
+plt.show
+plt.rcParams["figure.figsize"] = (20,5)
+from sklearn.tree import DecisionTreeClassifier
+from sklearn.model_selection import train_test_split
+x_train, x_test, y_train, y_test = train_test_split(x,y, test_size=0.3)
+
+cl1 = DecisionTreeClassifier()
+cl1.fit(x_train,y_train)
+x=x.to_numpy()
+
+x=x.reshape(-1,1)
+from sklearn.linear_model import LogisticRegression
+logreg = LogisticRegression()
+logreg = LogisticRegression().fit(x_train,y_train)
+y_pred= logreg.predict(x_test)
+from sklearn import metrics
+cnf_matrix = metrics.confusion_matrix(y_test,y_pred)
+cnf_matrix
+heatmap=plt.imshow(cnf_matrix,cmap='cool', interpolation = 'nearest')
+plt.xlabel("y test")
+plt.ylabel("y pred")
+plt.colorbar(heatmap)
+
+plt.show()
+print("Accuracy:",metrics.accuracy_score(y_test,y_pred))
+from sklearn.metrics import classification_report
+print(classification_report(y_test,y_pred))
